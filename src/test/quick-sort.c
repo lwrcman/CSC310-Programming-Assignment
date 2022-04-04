@@ -32,6 +32,8 @@ int select_pivot(int *data, int length)
         return length - 1;
     if (a > c && b < c)
         return length - 1;
+
+    return 0;
 }
 
 /**
