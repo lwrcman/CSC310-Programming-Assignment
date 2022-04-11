@@ -22,20 +22,6 @@ void generate_file(const char *filename, int data[], size_t length)
 }
 
 /**
- * @brief If the directory does not exist we will generate the directory
- *
- * @param directory the directory we plan on creating
- */
-void generate_directory(const char *directory)
-{
-    struct stat st = {0};
-    if (stat(directory, &st) == -1)
-    {
-        mkdir(directory, 0777);
-    }
-}
-
-/**
  * @brief Generates a list of random numbers
  *
  * @param length number of random numbers needed to be generated
@@ -104,10 +90,13 @@ void GenerateData()
     char *base = "../data/";
     char path[256];
 
-    char *sections[] = {"unsorted", "sorted", "reverse-sorted"};
-    int *(*functions[3])(int) = {generate_random_data, generate_sorted_data, generate_reverse_sorted_data};
+    // Little bit of trickery, but helps
+    // me extract the logic for generation
+    // these are found in "common/helper.h" 
+    SECTIONS
+    SIZES
 
-    char *sizes[] = {"small", "medium", "large"};
+    int *(*functions[3])(int) = {generate_random_data, generate_sorted_data, generate_reverse_sorted_data};
     int size_nums[] = {10000, 100000, 1000000};
 
     time_t begin_time = clock();

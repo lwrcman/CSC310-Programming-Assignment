@@ -6,7 +6,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "common/swap.h"
+#include "common/helpers.h"
 
 void heap_sort(int *data, int length);
 

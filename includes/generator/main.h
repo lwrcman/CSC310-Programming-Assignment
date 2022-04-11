@@ -7,9 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
+#include "common/helpers.h"
 #include "test/quick-sort.h"
 
 // * Constants Are Listed Below! * //
