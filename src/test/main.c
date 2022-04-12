@@ -37,12 +37,31 @@ int *read_integers_from_file(char *file_name, int *length)
  * @param length The length of the data
  * @return int the total execution time of the sorting algorithm
  */
-int time_execution(void (*function)(int *, int), int *data, int length)
+float time_execution(void (*function)(int *, int), int *data, int length)
 {
     time_t begin_time = clock();
     function(data, length);
     time_t end_time = clock();
-    return (int)(end_time - begin_time) / (CLOCKS_PER_SEC / 1000);
+    return (end_time - begin_time) / (CLOCKS_PER_SEC / 1000.0);
+}
+
+/**
+ * @brief Set the up output file object
+ * 
+ * @param filename The name of the file we are writing to
+ * @param mode The mode of the file we are writing to
+ * @return FILE* A pointer to the file
+ */
+FILE *setup_output_file(const char *filename, const char *mode)
+{
+    FILE *file = fopen(filename, mode);
+    if (file == NULL)
+    {
+        printf("Could not open file %s\n", filename);
+        return NULL;
+    }
+
+    return file;
 }
 
 /**
@@ -52,9 +71,12 @@ int time_execution(void (*function)(int *, int), int *data, int length)
 void RunTests()
 {
     void (*algorithms[3])(int *, int) = {quick_sort, heap_sort, merge_sort};
+    char *algorithm_names[3] = {"Quick Sort", "Heap Sort", "Merge Sort"};
 
     SECTIONS
     SIZES
+
+    FILE *file_pointer = setup_output_file("../output.csv", "w+");
 
     for (int algorithm = 0; algorithm < 3; algorithm++)
     {
@@ -62,22 +84,35 @@ void RunTests()
         {
             for (int j = 0; j < 3; j++)
             {
-                char base2[256] = "../data/";
-                generate_directory(strcat(strcat(strcat(base2, sections[i]), "/"), sizes[j]));
+                // Write the algorithm name, section name, and size name
+                fprintf(file_pointer, "%s,", algorithm_names[algorithm]);
+                fprintf(file_pointer, "%s,", sections[i]);
+                fprintf(file_pointer, "%s,", sizes[j]);
 
+                // For all 30 data files, we want to read them in and time them
                 for (int k = 1; k <= 30; k++)
                 {
                     char *file_name = malloc(sizeof(char) * 256);
                     sprintf(file_name, "../data/%s/%s/%d.txt", sections[i], sizes[j], k);
-                    printf("%s: ", file_name);
 
+                    // Read the data in
                     int length;
                     int *data = read_integers_from_file(file_name, &length);
 
-                    int time = time_execution(algorithms[algorithm], data, length);
-                    printf("%d\n", time);
+                    // Test the data
+                    float time = time_execution(algorithms[algorithm], data, length);
+                    fprintf(file_pointer, "%f,", time);
+
+                    // Free the data and the file name
+                    free(file_name);
+                    free(data);
                 }
+
+                // Add a new line since we finished the tests under that name.
+                fprintf(file_pointer, "\n");
             }
         }
     }
+
+    fclose(file_pointer);
 }

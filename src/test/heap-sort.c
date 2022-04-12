@@ -2,28 +2,28 @@
 
 
 /**
- * @brief Heapifies the array
+ * @brief Sets the array to 
  * 
  * @param array The array we want to heapify
  * @param size The size of the array
  * @param index The index of the array we want to heapify
  */
-void heapify(int *array, int size, int index) {
+void heapify(int *data, int length, int index) {
     int left = 2 * index + 1;
     int right = 2 * index + 2;
     int largest = index;
 
-    if (left < size && array[left] > array[largest]) {
+    if (left < length && data[left] > data[largest]) {
         largest = left;
     }
 
-    if (right < size && array[right] > array[largest]) {
+    if (right < length && data[right] > data[largest]) {
         largest = right;
     }
 
     if (largest != index) {
-        swap(array, index, largest);
-        heapify(array, size, largest);
+        swap(data, index, largest);
+        heapify(data, length, largest);
     }
 }
 
@@ -33,15 +33,15 @@ void heapify(int *array, int size, int index) {
  * @param array The array to sort
  * @param size The size of the array we are sorting
  */
-void heap_sort(int *array, int size) {
+void heap_sort(int *data, int length) {
   // Build heap
-  for (int i = size / 2 - 1; i >= 0; i--) {
-    heapify(array, size, i);
+  for (int i = length / 2 - 1; i >= 0; i--) {
+    heapify(data, length, i);
   }
 
   // Sort
-  for (int i = size - 1; i >= 0; i--) {
-    swap(array, 0, i);
-    heapify(array, i, 0);
+  for (int i = length - 1; i >= 0; i--) {
+    swap(data, 0, i);
+    heapify(data, i, 0);
   }
 }
